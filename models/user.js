@@ -39,12 +39,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     select: false,
-    validate: {
-      validator(v) {
-        return validatorjs.isStrongPassword(v);
-      },
-      message: 'Введенный пароль не соответствует условиям',
-    },
   },
 });
 
