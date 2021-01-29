@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
+const validatorjs = require('validator');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -28,17 +28,23 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    validate(value) {
-      if (!validator.isEmail(value)) {
-        throw new Error('Некорректный Email');
-      }
+    validate: {
+      validator(v) {
+        return validatorjs.isEmail(v);
+      },
+      message: 'Введенный email не соответствует условиям',
     },
   },
   password: {
     type: String,
     required: true,
-    minlength: 8,
     select: false,
+    validate: {
+      validator(v) {
+        return validatorjs.isStrongPassword(v);
+      },
+      message: 'Введенный пароль не соответствует условиям',
+    },
   },
 });
 

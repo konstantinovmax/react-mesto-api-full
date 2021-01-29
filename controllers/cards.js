@@ -1,34 +1,45 @@
 const Card = require('../models/card');
 
-const cardsList = (req, res) => {
+const BadRequestError = require('../errors/BadRequestError');
+const ForbiddenError = require('../errors/ForbiddenError');
+const NotFoundError = require('../errors/NotFoundError');
+
+const cardsList = (req, res, next) => {
   Card.find({})
     .then((cards) => res.status(200).send(cards))
-    .catch(() => res.status(500).send({ message: 'Не удалось загрузить список карточек' }));
+    .catch(next);
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: err.message });
+        throw new BadRequestError(err.message);
       }
-      return res.status(500).send({ message: 'Ошибка сервера' });
-    });
+      return next(err);
+    })
+    .catch(next);
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        throw new BadRequestError('Некорректно указан id карточки');
+      }
+      return next(err);
+    })
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Не удалось найти карточку' });
+        throw new NotFoundError('Не удалось найти карточку');
       }
       return Card.findById(req.params.cardId)
         .then(() => {
           if (card.owner.toString() !== req.user._id) {
-            return res.status(403).send({ message: 'Нет доступа' });
+            throw new ForbiddenError('Нет доступа');
           }
           return Card.findByIdAndRemove(req.params.cardId)
             .then((c) => {
@@ -36,60 +47,41 @@ const deleteCard = (req, res) => {
             });
         });
     })
-    .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        return res.status(400).send({ message: 'Некорректно указан id карточки' });
-      }
-      return res.status(500).send({ message: 'Ошибка сервера' });
-    });
+    .catch(next);
 };
 
-/* const deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => {
-      if (!card) {
-        return res.status(404).send({ message: 'Не удалось найти карточку' });
-      }
-      return res.status(200).send(card);
-    })
-    .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        return res.status(400).send({ message: 'Некорректно указан id карточки' });
-      }
-      return res.status(500).send({ message: 'Ошибка сервера' });
-    });
-}; */
-
-const cardLike = (req, res) => {
+const cardLike = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        throw new BadRequestError('Некорректно указан id карточки');
+      }
+      return next(err);
+    })
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Не удалось найти карточку' });
+        throw new NotFoundError('Не удалось найти карточку');
       }
       return res.status(200).send(card);
     })
-    .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        return res.status(400).send({ message: 'Некорректно указан id карточки' });
-      }
-      return res.status(500).send({ message: 'Ошибка сервера' });
-    });
+    .catch(next);
 };
 
-const cardLikeRemove = (req, res) => {
+const cardLikeRemove = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        throw new BadRequestError('Некорректно указан id карточки');
+      }
+      return next(err);
+    })
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Не удалось найти карточку' });
+        throw new NotFoundError('Не удалось найти карточку');
       }
       return res.status(200).send(card);
     })
-    .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        return res.status(400).send({ message: 'Некорректно указан id карточки' });
-      }
-      return res.status(500).send({ message: 'Ошибка сервера' });
-    });
+    .catch(next);
 };
 
 module.exports = {

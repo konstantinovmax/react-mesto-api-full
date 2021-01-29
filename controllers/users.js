@@ -4,29 +4,35 @@ const User = require('../models/user');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-const usersList = (req, res) => {
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const ConflictError = require('../errors/ConflictError');
+
+const usersList = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send(users))
-    .catch(() => res.status(500).send({ message: 'Не удалось загрузить список пользователей' }));
+    .catch(next);
 };
 
-const doesUserExist = (req, res) => {
+const doesUserExist = (req, res, next) => {
   User.findById(req.params.id)
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        throw new BadRequestError('Некорректно указан id пользователя');
+      }
+      return next(err);
+    })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Не удалось найти пользователя' });
+        throw new NotFoundError('Не удалось найти пользователя');
       }
       return res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        return res.status(400).send({ message: 'Некорректно указан id пользователя' });
-      }
-      return res.status(500).send({ message: 'Ошибка сервера' });
-    });
+    .catch(next);
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name,
     about,
@@ -35,74 +41,94 @@ const createUser = (req, res) => {
     password,
   } = req.body;
 
-  bcrypt.hash(password, 10)
-    .then((hash) => User.create({
-      name,
-      about,
-      avatar,
-      email,
-      password: hash,
-    }))
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: err.message });
+  User.findOne({ email: email }) // eslint-disable-line
+    .then((u) => {
+      if (u) {
+        throw new ConflictError('Указанный email уже занят');
       }
-      return res.status(500).send({ message: 'Ошибка сервера' });
-    });
+      bcrypt.hash(password, 10)
+        .then((hash) => User.create({
+          name,
+          about,
+          avatar,
+          email,
+          password: hash,
+        }))
+        .catch((err) => {
+          if (err.name === 'ValidationError') {
+            throw new BadRequestError(err.message);
+          }
+          return next(err);
+        })
+        .then((user) => {
+          const { name, about, avatar, email, _id } = user; // eslint-disable-line
+
+          return res.status(200).send({
+            name,
+            about,
+            avatar,
+            email,
+            _id,
+          });
+        })
+        .catch(next);
+    })
+    .catch(next);
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const {
     name,
     about,
   } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { name, about }, { runValidators: true, new: true })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        throw new BadRequestError(err.message);
+      }
+      return next(err);
+    })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Не удалось найти пользователя' });
+        throw new NotFoundError('Не удалось найти пользователя');
       }
       return res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: err.message });
-      }
-      return res.status(500).send({ message: 'Ошибка сервера' });
-    });
+    .catch(next);
 };
 
-const updateUserAvatar = (req, res) => {
+const updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { avatar }, { runValidators: true, new: true })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        throw new BadRequestError(err.message);
+      }
+      return next(err);
+    })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Не удалось найти пользователя' });
+        throw new NotFoundError('Не удалось найти пользователя');
       }
       return res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: err.message });
-      }
-      return res.status(500).send({ message: 'Ошибка сервера' });
-    });
+    .catch(next);
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error('Некорректная почта или пароль'));
+        throw new UnauthorizedError('Некорректные почта или пароль');
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new Error('Некорректная почта или пароль'));
+            throw new UnauthorizedError('Некорректные почта или пароль');
           }
           return user;
         });
@@ -111,25 +137,24 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key', { expiresIn: '7d' });
       res.send({ token }); // Применить запись JWT в httpOnly куку
     })
-    .catch((err) => {
-      res.status(401).send({ message: err.message });
-    });
+    .catch(next);
 };
 
-const getUserData = (req, res) => {
+const getUserData = (req, res, next) => {
   User.findById(req.user._id)
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        throw new BadRequestError('Некорректно указан id пользователя');
+      }
+      return next(err);
+    })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Не удалось найти пользователя' });
+        throw new NotFoundError('Не удалось найти пользователя');
       }
       return res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        return res.status(400).send({ message: 'Некорректно указан id пользователя' });
-      }
-      return res.status(500).send({ message: 'Ошибка сервера' });
-    });
+    .catch(next);
 };
 
 module.exports = {
