@@ -12,7 +12,7 @@ cardsRouter.get('/', cardsList);
 
 cardsRouter.post('/', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(1).max(20), // eslint-disable-next-line
+    name: Joi.string().required().min(2).max(30), // eslint-disable-next-line
     link: Joi.string().required().pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/).message('Некорректно указан url'),
   }),
 }), createCard);
