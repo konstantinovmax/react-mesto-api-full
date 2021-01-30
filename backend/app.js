@@ -24,6 +24,13 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 app.use(requestLogger); // Логгер запросов
 app.use(bodyParser.json());
 app.use(cors());
+
+app.get('/crash-test', () => { // Краш-тест сервера. Удалить после ревью!
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
