@@ -61,15 +61,9 @@ const createUser = (req, res, next) => {
           return next(err);
         })
         .then((user) => {
-          const { name, about, avatar, email, _id } = user; // eslint-disable-line
+          const { email, _id } = user; // eslint-disable-line
 
-          return res.status(200).send({
-            name,
-            about,
-            avatar,
-            email,
-            _id,
-          });
+          return res.status(200).send({ data: { email, _id } });
         })
         .catch(next);
     })
