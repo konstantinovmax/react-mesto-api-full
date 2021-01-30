@@ -10,6 +10,6 @@
 5. База данных - MongoDB
 
 **Ссылки на проект**
-Публичный IP: `178.154.255.45`
-Фронтенд: [Ссылка на проект](mestomk.students.nomoredomains.monster)
-Бэкенд: [Ссылка на проект](api.mestomk.students.nomoredomains.monster)
++ Фронтенд: [mestomk.students.nomoredomains.monster](mestomk.students.nomoredomains.monster)
++ Бэкенд: [api.mestomk.students.nomoredomains.monster](api.mestomk.students.nomoredomains.monster)
++ Публичный IP: `178.154.255.45`
