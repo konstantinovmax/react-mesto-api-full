@@ -9,6 +9,6 @@
 }
 
 .header__logout:hover {
-    opacity: 60%; 
+    opacity: 0.6; 
     transition: opacity ease .3s;
 }
