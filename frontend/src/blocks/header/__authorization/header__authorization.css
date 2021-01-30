@@ -1,0 +1,19 @@
+.header__authorization {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+}
+
+.header__authorization:hover {
+    opacity: 60%; 
+    transition: opacity ease .3s;
+}
+
+@media screen and (max-width: 410px) {
+    .header__authorization {
+        font-size: 14px;
+        line-height: 17px;
+    }
+}

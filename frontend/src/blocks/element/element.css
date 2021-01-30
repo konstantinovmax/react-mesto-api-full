@@ -1,0 +1,18 @@
+@import url(./__caption/element__caption.css);
+@import url(./__image/element__image.css);
+@import url(./__like-button/element__like-button.css);
+@import url(./__caption-container/element__caption-container.css);
+@import url(./__delete/element__delete.css);
+@import url(./__like-button/_active/element__like-button_active.css);
+@import url(./__like-area/element__like-area.css);
+@import url(./__like-numbers/element__like-numbers.css);
+@import url(./__delete/_active/element__delete_active.css);
+
+.element {
+    margin: 0;
+    background-color: white;
+    border-radius: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+}

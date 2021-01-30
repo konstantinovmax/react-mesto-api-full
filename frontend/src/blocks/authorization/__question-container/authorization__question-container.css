@@ -1,0 +1,11 @@
+.authorization__question-container {
+    display: flex;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+@media screen and (max-width: 410px) {
+    .authorization__question-container {
+        margin-top: 20px;
+    }
+}

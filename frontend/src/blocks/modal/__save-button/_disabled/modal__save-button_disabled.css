@@ -1,0 +1,7 @@
+.modal__save-button_disabled {
+    opacity: 0.2;
+    border: 1px solid #000000;
+    color: black;
+    background-color: white;
+    pointer-events: none;
+}

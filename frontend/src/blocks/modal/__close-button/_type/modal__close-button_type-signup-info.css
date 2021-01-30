@@ -1,0 +1,6 @@
+@media screen and (max-width: 510px) {
+    .modal__close-button_type-signup-info {
+        top: -60px;
+        right: 44%;
+    }
+}

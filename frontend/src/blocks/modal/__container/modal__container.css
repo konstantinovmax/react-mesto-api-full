@@ -1,0 +1,21 @@
+.modal__container {
+    width: 430px;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    color: black;
+    padding-top: 34px;
+    padding-right: 36px;
+    padding-bottom: 36px;
+    padding-left: 36px;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+@media screen and (max-width: 510px) {
+    .modal__container {
+        width: 70%;
+    }
+}

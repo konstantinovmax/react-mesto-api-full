@@ -1,0 +1,7 @@
+@media screen and (max-width: 620px) {
+    .header__user-container_not-logged-in {
+        display: flex;
+        align-items: center;
+        margin: 20px;
+    }
+}

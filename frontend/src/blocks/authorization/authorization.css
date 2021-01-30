@@ -1,0 +1,24 @@
+@import url(./__form/authorization__form.css);
+@import url(./__input/authorization__input.css);
+@import url(./__link-to-signin/authorization__link-to-signin.css);
+@import url(./__question-container/authorization__question-container.css);
+@import url(./__question-text/authorization__question-text.css);
+@import url(./__submit-button/authorization__submit-button.css);
+@import url(./__title/authorization__title.css);
+
+.authorization {
+    max-width: 882px;
+    margin: 0 auto;
+    padding-top: 60px;
+    box-sizing: border-box;
+    min-height: calc(100vh - 230px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media screen and (max-width: 410px) {
+    .authorization {
+        padding-top: 40px;
+    }
+}

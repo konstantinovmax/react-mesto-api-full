@@ -1,0 +1,5 @@
+.header__user-container-mobile_is-open {
+    transform: translateY(0);
+    opacity: 1;
+    height: 142px;
+}

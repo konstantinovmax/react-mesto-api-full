@@ -1,0 +1,12 @@
+@import url(./__content/root__content.css);
+
+/* header, span, div, nav, p, h1, h2, h3, h4, a, section, ul, li, img, iframe, input, button {
+    outline: 1px solid;
+    outline-color: red;
+} */
+
+.root {
+    background-color: #000000;
+    font-family: 'Inter', Arial, Sans-serif;
+    color: #ffffff;
+}

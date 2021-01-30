@@ -1,0 +1,12 @@
+.modal__container_type_signup-info {
+    display: flex;
+    align-items: center;
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
+@media screen and (max-width: 510px) {
+    .modal__container_type_signup-info {
+        width: 90%;
+    }
+}

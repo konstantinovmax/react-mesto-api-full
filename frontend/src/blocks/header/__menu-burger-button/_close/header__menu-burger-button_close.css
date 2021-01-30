@@ -1,0 +1,15 @@
+.header__menu-burger-button_close {
+    background: none;
+}
+
+.header__menu-burger-button_close::before {
+    top: 0;
+    transform: rotate(45deg);
+    transition-delay: 0s, 0.3s;
+}
+
+.header__menu-burger-button_close::after {
+    bottom: 0;
+    transform: rotate(-45deg);
+    transition-delay: 0s, 0.3s;
+}

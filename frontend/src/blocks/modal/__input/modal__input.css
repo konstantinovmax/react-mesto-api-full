@@ -1,0 +1,16 @@
+.modal__input {
+    border: none;
+    border-bottom: solid #545454 1px;
+    padding-bottom: 13.26px;
+    margin-top: 54px;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+    font-weight: 400;
+    color: black;
+    border-radius: 0;
+}
+
+.modal__input:last-of-type {
+    margin-top: 30px;
+}
