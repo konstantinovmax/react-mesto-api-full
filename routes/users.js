@@ -13,7 +13,7 @@ usersRouter.get('/me', getUserData);
 
 usersRouter.get('/:id', celebrate({
   params: Joi.object().keys({
-    _id: Joi.string().alphanum().length(24),
+    id: Joi.string().alphanum().length(24),
   }),
 }), doesUserExist);
 
