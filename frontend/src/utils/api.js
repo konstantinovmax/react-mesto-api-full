@@ -108,7 +108,7 @@ class Api {
 }
 
 const api = new Api({
-    url: 'http://mestomk.students.nomoredomains.monster',
+    url: 'http://api.mestomk.students.nomoredomains.monster',
     headers: {
         Authorization: `Bearer ${localStorage.getItem('jwt')}`,
        'Content-Type': 'application/JSON',
