@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "Frontend of the Mesto project with authorization",
   "private": true,
-  "homepage": ".",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.5",
     "@testing-library/react": "^11.1.0",

@@ -13,7 +13,6 @@ const NotFoundError = require('./errors/NotFoundError');
 
 const PORT = 3000;
 const app = express();
-app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -23,7 +22,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 app.use(requestLogger); // Логгер запросов
-
+app.use(bodyParser.json());
 app.use(cors());
 app.post('/signin', celebrate({
   body: Joi.object().keys({
