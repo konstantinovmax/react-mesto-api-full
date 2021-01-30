@@ -6,3 +6,8 @@
     color: #fff;
     text-decoration: none;
 }
+
+.authorization__link-to-signin:hover {
+    opacity: 0.6; 
+    transition: opacity ease .3s;
+}
