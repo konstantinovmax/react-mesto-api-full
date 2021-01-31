@@ -25,12 +25,6 @@ app.use(requestLogger); // Логгер запросов
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/crash-test', () => { // Краш-тест сервера. Удалить после ревью!
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
-
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -40,9 +34,12 @@ app.post('/signin', celebrate({
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/).message('Некорректно указан url'),
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
-  }).unknown(true),
+    password: Joi.string().required().min(8).pattern(/^\S*$/).message('Не допускается использование пробелов'),
+  }),
 }), createUser);
 
 app.use('/users', auth, usersRouter);

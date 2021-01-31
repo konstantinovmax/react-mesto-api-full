@@ -39,6 +39,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     select: false,
+    validate: {
+      validator(v) {
+        return /^\S*$/.test(v);
+      },
+      message: 'Не допускается использование пробелов',
+    },
   },
 });
 
